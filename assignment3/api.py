@@ -3,7 +3,7 @@ import torch
 from fastapi import FastAPI, Response
 from PIL import Image
 import matplotlib.pyplot as plt
-from model import Generator
+from assignment3.model import Generator
 
 app = FastAPI(
     title="GAN Handwritten Digit Generator",
@@ -17,12 +17,12 @@ async def root():
 
 # Load the trained model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-checkpoint = torch.load("gan_model.pt", map_location=device)
+checkpoint = torch.load("/app/assignment3/gan_model.pt", map_location=device)
 generator = Generator().to(device)
 generator.load_state_dict(checkpoint['generator_state_dict'])
 generator.eval()
 
-@app.post("/generate_digit")
+@app.get("/generate_digit")
 async def generate_digit():
     # Generate a random noise vector
     noise = torch.randn(1, 100).to(device)

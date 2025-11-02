@@ -1,7 +1,4 @@
-# GAN Architecture Theory Questions
-
-## Question 1: Transposed Convolution Output Size Calculation
-
+## Question 1
 Given:
 - Input size: 8×8
 - Kernel size: 4×4
@@ -18,16 +15,14 @@ Calculation:
 
 Therefore, the output size will be 17×17.
 
-## Question 2: Effect of Increasing Stride
-
+## Question 2
 When increasing stride from 2 to 3, keeping all other parameters constant:
 - Original output size = (input_size - 1) * 2 + kernel_size - 2 * padding + output_padding
 - New output size = (input_size - 1) * 3 + kernel_size - 2 * padding + output_padding
 
 The increase in stride will result in a larger output size because we're increasing the spacing between kernel applications. The difference in output size will be (input_size - 1) pixels for each additional unit of stride.
 
-## Question 3: Transposed Convolution Output Size Formula
-
+## Question 3
 For a 2D transposed convolution:
 output_size = (I - 1) * S + K - 2P + OP
 
@@ -38,8 +33,7 @@ Where:
 - P = Padding
 - OP = Output padding
 
-## Question 4: Upsampling Configuration
-
+## Question 4:
 To upsample from 16×16 to 32×32 without padding, one possible configuration is:
 - Kernel size = 2
 - Stride = 2
@@ -47,8 +41,7 @@ To upsample from 16×16 to 32×32 without padding, one possible configuration is
 This works because:
 output_size = (16 - 1) * 2 + 2 = 32
 
-## Question 5: BatchNorm Calculation
-
+## Question 5: 
 Given mini-batch [6, 8, 10, 6]:
 
 1. Calculate mean (μ):
@@ -72,8 +65,7 @@ Given mini-batch [6, 8, 10, 6]:
    - (10 - 7.5) / 1.658 ≈ 1.507
    - (6 - 7.5) / 1.658 ≈ -0.904
 
-## Question 6: ReLU vs LeakyReLU Formulas
-
+## Question 6: 
 ReLU formula:
 f(x) = max(0, x)
 ```
@@ -92,8 +84,7 @@ f(x) = {
 }
 ```
 
-## Question 7: LeakyReLU vs ReLU in Deep Networks
-
+## Question 7:
 LeakyReLU is often preferred over ReLU in deep networks for several reasons:
 
 1. **Dying ReLU Problem**: ReLU can lead to "dead neurons" where a neuron consistently outputs zero for any input. This happens when a large negative bias leads to the neuron always receiving negative input. LeakyReLU prevents this by allowing a small gradient when the input is negative.
