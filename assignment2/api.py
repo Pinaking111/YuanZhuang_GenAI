@@ -1,14 +1,20 @@
 import io, json
+import os
 import torch
 import torch.nn.functional as F
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
 from torchvision import transforms
-from model import TinyCifarCNN
+from .model import TinyCifarCNN  # 使用相对导入
 
 app = FastAPI()
 
-_ckpt = torch.load("cnn_cifar10.pt", map_location="cpu")
+# 获取当前文件的目录路径
+current_dir = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(current_dir, "cnn_cifar10.pt")
+
+# 加载模型
+_ckpt = torch.load(model_path, map_location="cpu")
 classes = _ckpt["classes"]
 model = TinyCifarCNN(num_classes=len(classes))
 model.load_state_dict(_ckpt["state_dict"])
