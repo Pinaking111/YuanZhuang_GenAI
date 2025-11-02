@@ -5,7 +5,15 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from model import Generator
 
-app = FastAPI()
+app = FastAPI(
+    title="GAN Handwritten Digit Generator",
+    description="API for generating handwritten digits using a GAN model"
+)
+
+# Root endpoint
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the GAN Handwritten Digit Generator API"}
 
 # Load the trained model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
