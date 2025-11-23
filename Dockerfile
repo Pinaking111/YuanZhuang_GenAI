@@ -10,23 +10,15 @@ RUN apt-get update && apt-get install -y \
     RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
     pip install "uvicorn[standard]" fastapi python-multipart numpy pillow matplotlib
 
-RUN mkdir -p /app/assignment2 /app/assignment3
+RUN mkdir -p /app/assignment4
 
-COPY assignment2/__init__.py /app/assignment2/
-COPY assignment2/model.py /app/assignment2/
-COPY assignment2/api.py /app/assignment2/
-COPY assignment2/train.py /app/assignment2/
-COPY assignment2/cnn_cifar10.pt /app/assignment2/
-
-COPY assignment3/__init__.py /app/assignment3/
-COPY assignment3/model.py /app/assignment3/
-COPY assignment3/api.py /app/assignment3/
-COPY assignment3/train.py /app/assignment3/
-COPY assignment3/gan_model.pt /app/assignment3/
+# Copy only assignment4 (latest homework)
+COPY assignment4/ /app/assignment4/
 
 ENV PYTHONPATH=/app
 
-EXPOSE 8000 8001
+# Expose single port for grader convenience
+EXPOSE 8000
 
-CMD uvicorn assignment2.api:app --host 0.0.0.0 --port 8000 & \
-    uvicorn assignment3.api:app --host 0.0.0.0 --port 8001
+# Start the Assignment 4 API
+CMD ["uvicorn", "assignment4.api:app", "--host", "0.0.0.0", "--port", "8000"]
