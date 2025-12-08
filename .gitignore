@@ -9,3 +9,6 @@ wheels/
 # Virtual environments
 .venv
 assignment2/data/
+
+# Model checkpoints (too large for git)
+assignment5/checkpoint/

@@ -1,84 +1,63 @@
 # SPS GenAI Assignments
 
-This repository contains two machine learning models with REST APIs:
-1. Assignment 2: CNN implementation for CIFAR10 image classification
-2. Assignment 3: GAN implementation for generating handwritten digits
+This repository contains multiple assignment demos and small APIs. The current focus is
+Assignment 5 — an LLM fine-tuning demo using a small GPT-2 model and a text-generation API.
+
+Supported assignments in this repo (examples):
+- Assignment 2: CNN for CIFAR-10 (legacy)
+- Assignment 3: GAN for MNIST (legacy)
+- Assignment 5: LLM fine-tuning demo (current)
 
 ## Requirements
 
-- Docker
-- Python 3.12+ (if running locally)
+- Docker (optional, recommended for reproducible runs)
+- Python 3.12+ and a virtual environment (recommended: `.venv`)
 
-## Quick Start with Docker
+## Quick Start — Assignment 5 (recommended)
 
-1. Build the Docker image:
-```bash
-docker build -t sps_genai .
-```
-
-2. Run the container:
-```bash
-docker run -p 8000:8000 -p 8001:8001 sps_genai
-```
-
-3. Access the APIs:
-- Assignment 2 (CIFAR10): http://localhost:8000/docs
-- Assignment 3 (GAN): http://localhost:8001/docs
-
-## Local Development
-
-1. Install dependencies:
-```bash
-pip install uv
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e .
-```
-
-2. Train the models:
-```bash
-# Train CIFAR10 CNN
-python assignment2/train.py
-
-# Train GAN
-python assignment3/train.py
-```
-
-3. Start the APIs:
-```bash
-# Start Assignment 2 API (CIFAR10)
-uvicorn assignment2.api:app --port 8000 --reload
-
-# Start Assignment 3 API (GAN)
-uvicorn assignment3.api:app --port 8001 --reload
-```
-
-## API Usage
-
-### Assignment 2: CIFAR10 Image Classification
-
-Send a POST request to `/predict` with an image file to get classification results:
+1) Build the Docker image (optional):
 
 ```bash
-curl -X POST -F "file=@your_image.jpg" http://localhost:8000/predict
+docker build -t sps-genai:assignment5 .
 ```
 
-### Assignment 3: GAN Digit Generation
-
-Send a GET request to `/generate` to generate a handwritten digit:
+2) Run the container (optional):
 
 ```bash
-# Generate a random digit
-curl http://localhost:8001/generate
-
-# Generate a specific digit (0-9)
-curl "http://localhost:8001/generate?digit=5"
+docker run -p 8000:8000 sps-genai:assignment5
 ```
 
-Response format:
-```json
-{
-    "label": "predicted_class",
-    "confidence": 0.9234
-}
+3) Or run locally in the project's virtualenv (fastest for development):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install transformers datasets accelerate sentencepiece torch uvicorn fastapi python-multipart numpy pillow matplotlib
+
+# (Optional) run a quick smoke fine-tune to create a local checkpoint
+python assignment5/fine_tune.py --split "train[:100]" --num_train_epochs 1 --per_device_train_batch_size 1
+
+# start the API
+.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000 &
+
+# call the generate endpoint (example)
+curl -X POST http://localhost:8000/assignment5/generate \
+    -H "Content-Type: application/json" \
+    -d '{"model_dir":"assignment5/checkpoint","prompt":"Hello, how are you?","max_new_tokens":50}'
 ```
+
+## What Assignment 5 provides
+
+- `assignment5/fine_tune.py`: fine-tuning script (Hugging Face Trainer). Saves a checkpoint to `assignment5/checkpoint/`.
+- `main.py` (root): FastAPI app exposing `POST /assignment5/generate` which loads a tokenizer + model and returns generated text.
+- `assignment5/part2_answers.md`: theory answers for the reinforcement-learning questions.
+
+## Submission notes
+
+- For graders: include `assignment5/` (training script, main API, README, theory answers). If you include `assignment5/checkpoint/`, note it may be large — consider providing a zipped checkpoint or instructions to reproduce using `fine_tune.py`.
+
+## Legacy assignments
+
+Older assignment folders remain for reference (`assignment2/`, `assignment3/`). They are not required for Assignment 5 grading.
+

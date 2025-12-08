@@ -2,23 +2,26 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# Install system deps
 RUN apt-get update && apt-get install -y \
     build-essential \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-    RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
-    pip install "uvicorn[standard]" fastapi python-multipart numpy pillow matplotlib
+# Install Python deps (torch CPU wheel plus common libs and transformers stack)
+RUN pip install --no-cache-dir \
+    torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir "uvicorn[standard]" fastapi python-multipart numpy pillow matplotlib && \
+    pip install --no-cache-dir transformers datasets accelerate sentencepiece
 
-RUN mkdir -p /app/assignment4
-
-# Copy only assignment4 (latest homework)
-COPY assignment4/ /app/assignment4/
+# Only copy assignment5 and the root main app to keep image small and focused
+COPY main.py /app/main.py
+COPY assignment5/ /app/assignment5/
 
 ENV PYTHONPATH=/app
 
-# Expose single port for grader convenience
+# Expose port for the FastAPI app
 EXPOSE 8000
 
-# Start the Assignment 4 API
-CMD ["uvicorn", "assignment4.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the FastAPI app (root `main.py` serves assignment5)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
